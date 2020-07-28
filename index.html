@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>POSTFIRE | CARTO</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+	<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+    <!-- Include Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <link href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" rel="stylesheet">
+	<!-- Include Jquery -->
+	
+    <!-- Include CARTO.js -->
+    <script src="https://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+    <!-- Fonts -->
+	<link rel="stylesheet" href="https://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
+    <style>
+      html, body{
+        height : 100%;
+        padding: 0;
+        margin: 0;
+		}
+	   #map{
+	    width: 70%;
+		height: 100%;
+	   }
+	   #legend{
+			
+			
+	   }
+	   .character{
+			width: 30%
+	   }
+	  .map_container{
+		display:flex;
+		height: 100%;
+	  }
+	  .container>div{
+		flex:1;
+	  }
+	
+	  .options.svelte-100ox14{position:absolute; top:30px; left: 30px;font-size:0.8rem;padding:0.5rem;flex-wrap:wrap}.options-simulation.svelte-100ox14,.options-population.svelte-100ox14,.options-scenario.svelte-100ox14,.options-boundaries.svelte-100ox14{padding:0.5rem 1rem;display:flex;flex-direction:column}.options-simulation.svelte-100ox14>div.svelte-100ox14{display:flex;flex-direction:row;align-items:center;z-index:4}.title.svelte-100ox14{text-transform:uppercase;padding-right:20px}.custom-select{font-size:0.8rem}.custom-select-wrapper label{display:none}.custom-control-label{line-height:2}
+    </style>
+  </head>
+  <body>
+	<div class='map_container'>
+	  <div id="map"></div>
+		<div class='character'>
+			
+			<div class = 'options'>								
+				<div class='options-scenario'><span class="title">RCP SCENARIO</span> 
+				<div>				
+					<select class='scenario'>
+						<option value='45'>Medium (RCP 4.5)</option>
+						<option value='85'>High (RCP 8.5)</option>
+						<option value='cur'>Current</option>
+					</select>
+				</div>
+				</div>
+				
+				
+				<div class='options-recurrence'><span class="title">SELECT RAINFALL RECURRENCE TIME:</span> 
+				<div>				
+					<select class='recurrence'>
+						<option value='10'>10-year</option>
+						<option value='50'>50-year</option>
+						<option value='00'>100-year</option>
+					</select>
+				</div>
+				</div>
+				
+				
+				<div class='options-scenario'><span class="title">SELECT CLIMATE CHANGE MODEL:</span> 
+				<div>				
+					<select class='model'>
+						<option value='ca'>CanESM2 (Average)</option>
+						<option value='had'>HadGEM2-ES (Warm/Drier)</option>
+					</select>
+				</div>
+				</div>
+				
+				<div class='buttons'>
+				<button class = 'reset'> view</button>
+				</div>
+			</div>
+			<div class='results'></div>
+			<div id = 'legend'>
+				<img src='legend.PNG' width="240" height="144">
+			</div>
+		</DIV>
+	</div>
+	  <script>
+		var lay_variable;
+		var model;
+		var recurrence;
+		var scenario;
+		var result;
+		$(document).ready(function () {
+			cartodb.createVis('map', "https://ruili11.carto.com/api/v2/viz/b3fdf47c-3122-4c63-9fac-ef018636b508/viz.json",{
+				search: false
+			})
+			.done(function (vis,layers){
+				lay_variable = layers[1].getSubLayer(0);
+			});
+			$('.model').change(function(){
+				model = $(this).children("option:selected").val();
+			})
+			$('.recurrence').change(function(){
+				recurrence = $(this).children("option:selected").val();
+			})
+			$('.scenario').change(function(){
+				scenario = $(this).children("option:selected").val();
+			})
+			
+			$('.reset').click(function(){
+				result = recurrence+model +scenario;
+				$('.results').html(result);
+				lay_variable.setCartoCSS('#layer {marker-width: 7;marker-fill: ramp([p'+result +'], (#fbe6c5, #f2a28a, #dc7176, #b24b65, #70284a),  Equal Interval);marker-fill-opacity: 1;marker-allow-overlap: true;marker-line-width: 1;marker-line-color: #FFFFFF;marker-line-opacity: 1;}')
+			});
+		});
+	  </script>
+  </body>
+</html>
+
