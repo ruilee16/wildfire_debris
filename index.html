@@ -55,6 +55,7 @@
 				<div class='options-scenario'><span class="title">RCP SCENARIO</span> 
 				<div>				
 					<select class='scenario'>
+						<option disabled selected value> -- select an emission senario -- </option>
 						<option value='45'>Medium (RCP 4.5)</option>
 						<option value='85'>High (RCP 8.5)</option>
 						<option value='cur'>Current</option>
@@ -66,6 +67,7 @@
 				<div class='options-recurrence'><span class="title">SELECT RAINFALL RECURRENCE TIME:</span> 
 				<div>				
 					<select class='recurrence'>
+						<option disabled selected value> -- select a rainfall intensity -- </option>
 						<option value='10'>10-year</option>
 						<option value='50'>50-year</option>
 						<option value='00'>100-year</option>
@@ -77,6 +79,7 @@
 				<div class='options-scenario'><span class="title">SELECT CLIMATE CHANGE MODEL:</span> 
 				<div>				
 					<select class='model'>
+						<option disabled selected value> -- select a climate model -- </option>
 						<option value='ca'>CanESM2 (Average)</option>
 						<option value='had'>HadGEM2-ES (Warm/Drier)</option>
 					</select>
@@ -99,6 +102,9 @@
 		var recurrence;
 		var scenario;
 		var result;
+		var mo;
+		var sc;
+		var re;
 		$(document).ready(function () {
 			cartodb.createVis('map', "https://ruili11.carto.com/api/v2/viz/b3fdf47c-3122-4c63-9fac-ef018636b508/viz.json",{
 				search: false
@@ -108,21 +114,28 @@
 			});
 			$('.model').change(function(){
 				model = $(this).children("option:selected").val();
+				mo = $(this).children("option:selected").text();
 			})
 			$('.recurrence').change(function(){
 				recurrence = $(this).children("option:selected").val();
+				re = $(this).children("option:selected").text();
 			})
 			$('.scenario').change(function(){
 				scenario = $(this).children("option:selected").val();
+				sc = $(this).children("option:selected").text();
 			})
 			
 			$('.reset').click(function(){
 				result = recurrence+model +scenario;
-				$('.results').html(result);
+				var show_result = 'map showing post-fire debris flow risk under '+mo +' climate change model, '+sc+ ' emission secnario, and '+ re +' recurrence rainfall events';
+				$('.results').html(show_result);
 				lay_variable.setCartoCSS('#layer {marker-width: 7;marker-fill: ramp([p'+result +'], (#fbe6c5, #f2a28a, #dc7176, #b24b65, #70284a),  Equal Interval);marker-fill-opacity: 1;marker-allow-overlap: true;marker-line-width: 1;marker-line-color: #FFFFFF;marker-line-opacity: 1;}')
 			});
 		});
 	  </script>
   </body>
+</html>
+
+
 </html>
 
